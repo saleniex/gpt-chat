@@ -13,9 +13,7 @@ func main() {
 	loadEnvs()
 
 	engine := gin.Default()
-
 	engine.GET("/", handler.NewRoot().Handle)
-
 	engine.POST("/say", handler.NewSay(chatBox()).Handle)
 
 	if err := engine.Run(env("LISTER_ADDR")); err != nil {
