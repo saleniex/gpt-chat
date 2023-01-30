@@ -40,13 +40,14 @@ func env(key string, defaultVal ...string) string {
 }
 
 func chatBox() *chat.Box {
-	conversationRepo := chat.NewConversationMemRepo("You", "Mobilly")
-	promptFilePath := env("PROMPT_FILE")
-	if promptFilePath != "" {
-		if err := conversationRepo.LoadPrompt(promptFilePath); err != nil {
-			log.Printf("Prompt file %s is not loaded: %s", promptFilePath, err)
+	prompt := chat.NewPrompt()
+	promptPath := env("PROMPT_FILE")
+	if promptPath != "" {
+		if err := prompt.Load(promptPath); err != nil {
+			log.Printf("Prompt path %s is not loaded: %s", promptPath, err)
 		}
 	}
+	conversationRepo := chat.NewConversationMemRepo("You", "Mobilly", prompt)
 
 	return chat.NewBox(
 		env("OPENAI_TOKEN"),
