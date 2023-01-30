@@ -1,10 +1,10 @@
 package main
 
 import (
-	"chat-gpt-rest/internal/chat"
-	"chat-gpt-rest/internal/handler"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	"gpt-chat/internal/chat"
+	"gpt-chat/internal/handler"
 	"log"
 	"os"
 )

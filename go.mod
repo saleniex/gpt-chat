@@ -1,4 +1,4 @@
-module chat-gpt-rest
+module gpt-chat
 
 go 1.19
 

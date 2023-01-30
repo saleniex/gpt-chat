@@ -1,8 +1,8 @@
 package handler
 
 import (
-	"chat-gpt-rest/internal/chat"
 	"github.com/gin-gonic/gin"
+	"gpt-chat/internal/chat"
 	"net/http"
 )
 
