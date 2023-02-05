@@ -10,13 +10,16 @@ import (
 )
 
 type Prompt struct {
-	content   string
+	Content   string
 	userLabel string
 	aiLabel   string
 }
 
-func NewPrompt() *Prompt {
-	return &Prompt{}
+func NewPrompt(userLabel, aiLabel string) *Prompt {
+	return &Prompt{
+		userLabel: userLabel,
+		aiLabel:   aiLabel,
+	}
 }
 
 func (p *Prompt) Load(path string) error {
@@ -32,11 +35,15 @@ func (p *Prompt) Load(path string) error {
 		return err
 	}
 
-	p.content = content
-	p.content = strings.ReplaceAll(content, "{USER}:", p.userLabel+":")
-	p.content = strings.ReplaceAll(content, "{AGENT}:", p.aiLabel+":")
+	p.Content = content
+	p.setUserAgentLabels()
 
 	return nil
+}
+
+func (p *Prompt) setUserAgentLabels() {
+	p.Content = strings.ReplaceAll(p.Content, "{USER}:", p.userLabel+":")
+	p.Content = strings.ReplaceAll(p.Content, "{AGENT}:", p.aiLabel+":")
 }
 
 func contentFromFile(filePath string) (string, error) {

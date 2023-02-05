@@ -23,7 +23,7 @@ func NewConversationMemRepo(userLabel, aiLabel string, prompt *Prompt) *Conversa
 
 func (c *ConversationMemRepo) PromptWithMessage(message *Message) string {
 	if c.history[message.Handle] == "" {
-		c.history[message.Handle] = c.prompt.content
+		c.history[message.Handle] = c.prompt.Content
 	}
 	newPrompt := fmt.Sprintf(
 		"%s\n\n%s: %s\n%s: ",

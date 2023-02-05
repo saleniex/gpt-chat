@@ -40,14 +40,16 @@ func env(key string, defaultVal ...string) string {
 }
 
 func chatBox() *chat.Box {
-	prompt := chat.NewPrompt()
+	userLabel := "You"
+	aiLabel := "Mobilly"
+	prompt := chat.NewPrompt(userLabel, aiLabel)
 	promptPath := env("PROMPT_FILE")
 	if promptPath != "" {
 		if err := prompt.Load(promptPath); err != nil {
 			log.Printf("Prompt path %s is not loaded: %s", promptPath, err)
 		}
 	}
-	conversationRepo := chat.NewConversationMemRepo("You", "Mobilly", prompt)
+	conversationRepo := chat.NewConversationMemRepo(userLabel, aiLabel, prompt)
 
 	return chat.NewBox(
 		env("OPENAI_TOKEN"),
