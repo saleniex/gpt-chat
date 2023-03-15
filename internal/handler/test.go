@@ -5,10 +5,10 @@ import (
 	"log"
 )
 
-type Whatsapp struct {
+type Test struct {
 }
 
-func (w Whatsapp) Handle(ctx *gin.Context) {
+func (w Test) Handle(ctx *gin.Context) {
 	log.Println("Content type: " + ctx.ContentType())
 	data, err := ctx.GetRawData()
 	if err != nil {
