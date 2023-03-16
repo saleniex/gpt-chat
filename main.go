@@ -15,7 +15,6 @@ func main() {
 	engine := gin.Default()
 	engine.GET("/", handler.NewRoot().Handle)
 	engine.POST("/say", handler.NewSay(chatBox()).Handle)
-	engine.POST("/test", handler.Test{}.Handle)
 	engine.GET("/meta/webhooks", handler.VerifyToken{
 		Token: env("META_VERIFY_TOKEN"),
 	}.Handle)
