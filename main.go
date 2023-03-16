@@ -16,9 +16,10 @@ func main() {
 	engine.GET("/", handler.NewRoot().Handle)
 	engine.POST("/say", handler.NewSay(chatBox()).Handle)
 	engine.POST("/test", handler.Test{}.Handle)
-	engine.GET("/meta/verify-token", handler.VerifyToken{
+	engine.GET("/meta/webhooks", handler.VerifyToken{
 		Token: env("META_VERIFY_TOKEN"),
 	}.Handle)
+	engine.POST("/meta/webhooks", handler.EventNotify{}.Handle)
 
 	if err := engine.Run(env("LISTER_ADDR")); err != nil {
 		log.Fatalln("Cannot start web service " + err.Error())
