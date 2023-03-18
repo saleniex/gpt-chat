@@ -19,8 +19,7 @@ func TestMetaEventStructure(t *testing.T) {
 		t.Errorf("Cannot unmarshal test JSON object: %s", err)
 	}
 
-	unmarshalledTextBody := event.Entries[0].Changes[0].Value.Messages[0].Text.Body
-	if unmarshalledTextBody != "_TEXT_BODY_" {
+	if event.TextBody() != "_TEXT_BODY_" {
 		t.Errorf("Invalid unmashalled content")
 	}
 }

@@ -25,3 +25,7 @@ type Message struct {
 type Text struct {
 	Body string `json:"body"`
 }
+
+func (e Event) TextBody() string {
+	return e.Entries[0].Changes[0].Value.Messages[0].Text.Body
+}
