@@ -23,5 +23,5 @@ func (n EventNotify) Handle(ctx *gin.Context) {
 		log.Printf("Cannot unmarshar event data: %s", err)
 		return
 	}
-	log.Printf("Receved: '%s'", event.TextBody())
+	log.Printf("Received: '%s' from %s (%s)", event.TextBody(), event.ProfileName(), event.WhatsappId())
 }

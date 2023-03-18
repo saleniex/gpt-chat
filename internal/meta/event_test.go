@@ -20,6 +20,13 @@ func TestMetaEventStructure(t *testing.T) {
 	}
 
 	if event.TextBody() != "_TEXT_BODY_" {
-		t.Errorf("Invalid unmashalled content")
+		t.Errorf("Invalid unmashalled content. Unexpected text body '%s'.", event.TextBody())
 	}
+	if event.ProfileName() != "Uldis Jansons" {
+		t.Errorf("Invalid unmashalled content. Unexpected profile name '%s'.", event.ProfileName())
+	}
+	if event.WhatsappId() != "37120042219" {
+		t.Errorf("Invalid unmashalled content. Unexpected whatsapp ID '%s'", event.WhatsappId())
+	}
+
 }
