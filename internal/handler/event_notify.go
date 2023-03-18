@@ -1,7 +1,9 @@
 package handler
 
 import (
+	"encoding/json"
 	"github.com/gin-gonic/gin"
+	"gpt-chat/internal/meta"
 	"log"
 )
 
@@ -12,7 +14,14 @@ func (n EventNotify) Handle(ctx *gin.Context) {
 	log.Println("Content type: " + ctx.ContentType())
 	data, err := ctx.GetRawData()
 	if err != nil {
-		log.Println("Error: ", err)
+		log.Printf("Error while retting request's raw data: %s", err)
+		return
 	}
-	log.Println(string(data))
+	var event meta.Event
+	err = json.Unmarshal(data, &event)
+	if err != nil {
+		log.Printf("Cannot unmarshar event data: %s", err)
+		return
+	}
+	log.Printf("Receved: '%s'", event.TextBody())
 }
