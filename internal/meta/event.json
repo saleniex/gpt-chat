@@ -1,0 +1,39 @@
+{
+  "object": "whatsapp_business_account",
+  "entry": [
+    {
+      "id": "100963892927381",
+      "changes": [
+        {
+          "value": {
+            "messaging_product": "whatsapp",
+            "metadata": {
+              "display_phone_number": "15550110292",
+              "phone_number_id": "109166368757716"
+            },
+            "contacts": [
+              {
+                "profile": {
+                  "name": "Uldis Jansons"
+                },
+                "wa_id": "37120042219"
+              }
+            ],
+            "messages": [
+              {
+                "from": "37120042219",
+                "id": "wamid.HBgLMzcxMjAwNDIyMTkVAgASGBQzRUIwNjAzNUVDQkIzOEZGM0IyMAA=",
+                "timestamp": "1678989983",
+                "text": {
+                  "body": "_TEXT_BODY_"
+                },
+                "type": "text"
+              }
+            ]
+          },
+          "field": "messages"
+        }
+      ]
+    }
+  ]
+}
