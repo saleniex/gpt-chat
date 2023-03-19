@@ -2,6 +2,7 @@ package meta
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"strings"
@@ -31,5 +32,10 @@ func (s Service) SendRequest(request ServiceRequest) error {
 	if response.StatusCode < 200 && response.StatusCode > 299 {
 		return fmt.Errorf("server responded with non-success status code %d", response.StatusCode)
 	}
+	responseBody, readErr := io.ReadAll(response.Body)
+	if readErr != nil {
+		return fmt.Errorf("cannot read server response: %s", readErr)
+	}
+	log.Printf("Message has been sent %d: %s", response.StatusCode, responseBody)
 	return nil
 }
