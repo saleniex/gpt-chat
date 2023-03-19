@@ -5,6 +5,7 @@ import (
 	"github.com/joho/godotenv"
 	"gpt-chat/internal/chat"
 	"gpt-chat/internal/handler"
+	"gpt-chat/internal/meta"
 	"log"
 	"os"
 )
@@ -18,7 +19,7 @@ func main() {
 	engine.GET("/meta/webhooks", handler.VerifyToken{
 		Token: env("META_VERIFY_TOKEN"),
 	}.Handle)
-	engine.POST("/meta/webhooks", handler.EventNotify{}.Handle)
+	engine.POST("/meta/webhooks", handler.NewEventNotify(metaWebService(), chatBox()).Handle)
 
 	if err := engine.Run(env("LISTER_ADDR")); err != nil {
 		log.Fatalln("Cannot start web service " + err.Error())
@@ -58,4 +59,11 @@ func chatBox() *chat.Box {
 	return chat.NewBox(
 		env("OPENAI_TOKEN"),
 		conversationRepo)
+}
+
+func metaWebService() *meta.Service {
+	return &meta.Service{
+		FromPhoneNumberId: env("META_FROM_PHONE_NUMBER"),
+		AccessToken:       env("META_ACCESS_TOKEN"),
+	}
 }
