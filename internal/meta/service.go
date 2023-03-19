@@ -23,9 +23,14 @@ func (s Service) SendRequest(request ServiceRequest) error {
 		return err
 	}
 	url := fmt.Sprintf("https://graph.facebook.com/v16.0/%s/messages", s.FromPhoneNumberId)
-	log.Printf("Send mesage: %s", dataStr)
-
-	response, postErr := http.Post(url, "application/json", strings.NewReader(dataStr))
+	httpRequest, newReqErr := http.NewRequest("POST", url, strings.NewReader(dataStr))
+	if newReqErr != nil {
+		return newReqErr
+	}
+	httpRequest.Header.Add("Content-Type", "application/json")
+	httpRequest.Header.Add("Authorization", "Bearer "+s.AccessToken)
+	httpClien := http.Client{}
+	response, postErr := httpClien.Do(httpRequest)
 	if postErr != nil {
 		return postErr
 	}
