@@ -2,8 +2,6 @@ package meta
 
 import (
 	"fmt"
-	"io"
-	"log"
 	"net/http"
 	"strings"
 )
@@ -17,30 +15,33 @@ type ServiceRequest interface {
 	Data() (string, error)
 }
 
-func (s Service) SendRequest(request ServiceRequest) error {
-	dataStr, err := request.Data()
-	if err != nil {
-		return err
+func (s Service) SendRequest(request ServiceRequest) (*ServiceResponse, error) {
+	dataStr, dataErr := request.Data()
+	if dataErr != nil {
+		return nil, dataErr
 	}
+
+	httpRequest, newReqErr := s.newHttpPostRequest(dataStr)
+	if newReqErr != nil {
+		return nil, newReqErr
+	}
+	httpClient := http.Client{}
+	response, postErr := httpClient.Do(httpRequest)
+	if postErr != nil {
+		return nil, postErr
+	}
+
+	return &ServiceResponse{HttpResponse: response}, nil
+}
+
+func (s Service) newHttpPostRequest(dataStr string) (*http.Request, error) {
 	url := fmt.Sprintf("https://graph.facebook.com/v16.0/%s/messages", s.FromPhoneNumberId)
 	httpRequest, newReqErr := http.NewRequest("POST", url, strings.NewReader(dataStr))
 	if newReqErr != nil {
-		return newReqErr
+		return nil, newReqErr
 	}
 	httpRequest.Header.Add("Content-Type", "application/json")
 	httpRequest.Header.Add("Authorization", "Bearer "+s.AccessToken)
-	httpClien := http.Client{}
-	response, postErr := httpClien.Do(httpRequest)
-	if postErr != nil {
-		return postErr
-	}
-	if response.StatusCode < 200 && response.StatusCode > 299 {
-		return fmt.Errorf("server responded with non-success status code %d", response.StatusCode)
-	}
-	responseBody, readErr := io.ReadAll(response.Body)
-	if readErr != nil {
-		return fmt.Errorf("cannot read server response: %s", readErr)
-	}
-	log.Printf("Message has been sent %d: %s", response.StatusCode, responseBody)
-	return nil
+
+	return httpRequest, nil
 }

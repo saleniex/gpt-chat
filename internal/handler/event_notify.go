@@ -81,5 +81,13 @@ func (n EventNotify) sendMessage(to string, textBody string) error {
 			Body:       textBody,
 		},
 	}
-	return n.webService.SendRequest(request)
+	response, err := n.webService.SendRequest(request)
+	if !response.IsHttpStatusSuccess() {
+		return fmt.Errorf(
+			"web service response (%d) is not successful: %s",
+			response.HttpResponse.StatusCode,
+			response.Body())
+	}
+
+	return err
 }
