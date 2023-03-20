@@ -51,6 +51,7 @@ func (n EventNotify) Handle(ctx *gin.Context) {
 		log.Printf("Error while getting response from chatbox: %s", err)
 		return
 	}
+	log.Printf("Reply with: %s", replyMessage.Text)
 	err = n.sendMessage(event.WhatsappId(), replyMessage.Text)
 	if err != nil {
 		log.Printf("Error while sending message to Whatsapp ID %s: %s", event.WhatsappId(), err)
