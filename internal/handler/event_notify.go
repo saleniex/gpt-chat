@@ -46,7 +46,7 @@ func (n EventNotify) Handle(ctx *gin.Context) {
 
 	var replyMessage *chat.Message
 	replyMessage, err = n.box.ResponseOn(&chat.Message{
-		Handle: "",
+		Handle: event.WhatsappId(),
 		Text:   event.TextBody(),
 	})
 	if err != nil {
