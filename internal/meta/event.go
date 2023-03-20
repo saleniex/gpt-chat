@@ -37,13 +37,48 @@ type Text struct {
 }
 
 func (e Event) TextBody() string {
-	return e.Entries[0].Changes[0].Value.Messages[0].Text.Body
+	if e.firstMessage() == nil {
+		return ""
+	}
+	return e.firstMessage().Text.Body
 }
 
 func (e Event) ProfileName() string {
-	return e.Entries[0].Changes[0].Value.Contacts[0].Profile.Name
+	if e.firstContact() == nil {
+		return ""
+	}
+	return e.firstContact().Profile.Name
 }
 
 func (e Event) WhatsappId() string {
-	return e.Entries[0].Changes[0].Value.Contacts[0].WaId
+	if e.firstContact() == nil {
+		return ""
+	}
+	return e.firstContact().WaId
+}
+
+func (e Event) firstMessage() *Message {
+	if len(e.Entries) == 0 {
+		return nil
+	}
+	if len(e.Entries[0].Changes) == 0 {
+		return nil
+	}
+	if len(e.Entries[0].Changes[0].Value.Messages) == 0 {
+		return nil
+	}
+	return &e.Entries[0].Changes[0].Value.Messages[0]
+}
+
+func (e Event) firstContact() *Contact {
+	if len(e.Entries) == 0 {
+		return nil
+	}
+	if len(e.Entries[0].Changes) == 0 {
+		return nil
+	}
+	if len(e.Entries[0].Changes[0].Value.Contacts) == 0 {
+		return nil
+	}
+	return &e.Entries[0].Changes[0].Value.Contacts[0]
 }

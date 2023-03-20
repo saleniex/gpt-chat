@@ -27,14 +27,19 @@ func (n EventNotify) Handle(ctx *gin.Context) {
 		log.Printf("Error while getting request's raw data: %s", err)
 		return
 	}
+	log.Printf("Received event notify: %s", data)
 	var event meta.Event
 	err = json.Unmarshal(data, &event)
 	if err != nil {
 		log.Printf("Cannot unmarshar event data: %s", err)
 		return
 	}
+	if event.TextBody() == "" || event.WhatsappId() == "" {
+		log.Printf("Received notify on non-message. Skip reply.")
+		return
+	}
 	log.Printf(
-		"Received: '%s' from %s (%s)",
+		"Received notify about message: '%s' from %s (%s)",
 		event.TextBody(),
 		event.ProfileName(),
 		event.WhatsappId())
