@@ -1,9 +1,16 @@
 package chat
 
-type ConversationRepo interface {
-	// PromptWithMessage get prompt with message added at the end
-	PromptWithMessage(message *Message) string
+type ChallengeResponse struct {
+	Challenge string
+	Response  string
+}
 
-	// StoreResponse store response message at the end of conversations
-	StoreResponse(message *Message)
+// ConversationRepo Conversations consists of history of question (challenge) of one party and response or other
+// Repository contain sets of such histories - each history is represented  by conversation handle (identificator)
+type ConversationRepo interface {
+	// StoreChallengeResponse Store challenge response for conversation handle
+	StoreChallengeResponse(handle string, cr *ChallengeResponse) error
+
+	// History Get handle challenge-response history
+	History(handle string) []ChallengeResponse
 }

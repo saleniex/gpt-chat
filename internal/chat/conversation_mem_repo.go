@@ -1,44 +1,34 @@
 package chat
 
-import (
-	"fmt"
-	"log"
-)
-
+// ConversationMemRepo ConversationRepo implementation where data is stored in-memory
+// exists only while application is active
 type ConversationMemRepo struct {
-	userLabel string
-	aiLabel   string
-	history   map[string]string
-	prompt    *Prompt
+	// MaxHandleCount Max items per handle, when reached remove older
+	MaxHandleCount int
+	history        map[string][]ChallengeResponse
 }
 
-func NewConversationMemRepo(userLabel, aiLabel string, prompt *Prompt) *ConversationMemRepo {
+func NewConversationMemRepo() *ConversationMemRepo {
 	return &ConversationMemRepo{
-		userLabel: userLabel,
-		aiLabel:   aiLabel,
-		history:   make(map[string]string),
-		prompt:    prompt,
+		history:        make(map[string][]ChallengeResponse),
+		MaxHandleCount: 10,
 	}
 }
 
-func (c *ConversationMemRepo) PromptWithMessage(message *Message) string {
-	if c.history[message.Handle] == "" {
-		c.history[message.Handle] = c.prompt.Content
+func (c *ConversationMemRepo) StoreChallengeResponse(handle string, cr *ChallengeResponse) error {
+	if c.history[handle] == nil {
+		c.history[handle] = make([]ChallengeResponse, 0)
 	}
-	newPrompt := fmt.Sprintf(
-		"%s\n\n%s: %s\n%s: ",
-		c.history[message.Handle],
-		c.userLabel,
-		message.Text,
-		c.aiLabel)
-	c.history[message.Handle] = newPrompt
 
-	return newPrompt
+	if len(c.history[handle]) >= c.MaxHandleCount {
+		c.history[handle] = c.history[handle][1:]
+	}
+
+	c.history[handle] = append(c.history[handle], *cr)
+
+	return nil
 }
 
-func (c *ConversationMemRepo) StoreResponse(message *Message) {
-	if c.history[message.Handle] == "" {
-		log.Fatal("try to store response message while conversation is not opened yet")
-	}
-	c.history[message.Handle] = c.history[message.Handle] + message.Text
+func (c *ConversationMemRepo) History(handle string) []ChallengeResponse {
+	return c.history[handle]
 }

@@ -9,15 +9,17 @@ import (
 )
 
 type Box struct {
-	accessToken string
-	client      *gogpt.Client
-	repo        ConversationRepo
+	accessToken        string
+	client             *gogpt.Client
+	repo               ConversationRepo
+	conversationPrompt *ConversationPrompt
 }
 
-func NewBox(accessToken string, repo ConversationRepo) *Box {
+func NewBox(accessToken string, repo ConversationRepo, conversationPrompt *ConversationPrompt) *Box {
 	return &Box{
-		accessToken: accessToken,
-		repo:        repo,
+		accessToken:        accessToken,
+		repo:               repo,
+		conversationPrompt: conversationPrompt,
 	}
 }
 
@@ -34,10 +36,13 @@ func (b *Box) ResponseOn(message *Message) (*Message, error) {
 
 	responseMessageText := strings.TrimSpace(response.Choices[0].Text)
 
-	b.repo.StoreResponse(&Message{
-		Handle: message.Handle,
-		Text:   responseMessageText,
+	repoErr := b.repo.StoreChallengeResponse(message.Handle, &ChallengeResponse{
+		Challenge: message.Text,
+		Response:  responseMessageText,
 	})
+	if repoErr != nil {
+		return nil, repoErr
+	}
 
 	return &Message{
 		Handle: message.Handle,
@@ -59,7 +64,7 @@ func (b *Box) messageRequest(message *Message) gogpt.CompletionRequest {
 		Temperature: 0.7,
 		MaxTokens:   400,
 		TopP:        1.0,
-		Prompt:      b.repo.PromptWithMessage(message),
+		Prompt:      b.conversationPrompt.withMessage(message),
 		Stop:        []string{},
 	}
 }

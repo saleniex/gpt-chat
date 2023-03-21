@@ -13,13 +13,15 @@ import (
 func main() {
 	loadEnvs()
 
+	chatBox := createChatBox()
+
 	engine := gin.Default()
 	engine.GET("/", handler.NewRoot().Handle)
-	engine.POST("/say", handler.NewSay(chatBox()).Handle)
+	engine.POST("/say", handler.NewSay(chatBox).Handle)
 	engine.GET("/meta/webhooks", handler.VerifyToken{
 		Token: env("META_VERIFY_TOKEN"),
 	}.Handle)
-	engine.POST("/meta/webhooks", handler.NewEventNotify(metaWebService(), chatBox()).Handle)
+	engine.POST("/meta/webhooks", handler.NewEventNotify(createMetaWebService(), chatBox).Handle)
 
 	if err := engine.Run(env("LISTER_ADDR")); err != nil {
 		log.Fatalln("Cannot start web service " + err.Error())
@@ -44,7 +46,7 @@ func env(key string, defaultVal ...string) string {
 	return val
 }
 
-func chatBox() *chat.Box {
+func createChatBox() *chat.Box {
 	userLabel := "You"
 	aiLabel := "Mobilly"
 	prompt := chat.NewPrompt(userLabel, aiLabel)
@@ -54,14 +56,16 @@ func chatBox() *chat.Box {
 			log.Printf("Prompt path %s is not loaded: %s", promptPath, err)
 		}
 	}
-	conversationRepo := chat.NewConversationMemRepo(userLabel, aiLabel, prompt)
+	conversationRepo := chat.NewConversationMemRepo()
+	conversationPrompt := chat.NewConversationPrompt(prompt, conversationRepo)
 
 	return chat.NewBox(
 		env("OPENAI_TOKEN"),
-		conversationRepo)
+		conversationRepo,
+		conversationPrompt)
 }
 
-func metaWebService() *meta.Service {
+func createMetaWebService() *meta.Service {
 	return &meta.Service{
 		FromPhoneNumberId: env("META_FROM_PHONE_NUMBER"),
 		AccessToken:       env("META_ACCESS_TOKEN"),
