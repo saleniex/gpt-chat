@@ -9,6 +9,7 @@ import (
 	"strings"
 )
 
+// Prompt Initial knowledge prompt located either in local file or web service
 type Prompt struct {
 	Content   string
 	userLabel string

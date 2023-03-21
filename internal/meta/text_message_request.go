@@ -2,6 +2,9 @@ package meta
 
 import "encoding/json"
 
+// TextMessageRequest Implementation of meta.ServiceRequest interface
+//
+// Request used to send message to Whatsapp user
 type TextMessageRequest struct {
 	MessagingProduct string          `json:"messaging_product"`
 	RecipientType    string          `json:"recipient_type"`

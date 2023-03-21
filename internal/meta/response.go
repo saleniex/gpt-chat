@@ -5,6 +5,7 @@ import (
 	"net/http"
 )
 
+// ServiceResponse HTTP response wrapper
 type ServiceResponse struct {
 	HttpResponse *http.Response
 }

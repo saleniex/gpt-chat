@@ -6,11 +6,19 @@ import (
 	"strings"
 )
 
+// Service HTTP service with authentication credentials
+//
+// Access tokens can be generated in "Meta for developers" portal https://developers.facebook.com.
+//
+// Application -> Whatsapp -> Getting started
 type Service struct {
+	// ID of phone number (not a phone number itself)
 	FromPhoneNumberId string
-	AccessToken       string
+	// Access token (in development mode "Temporary access token")
+	AccessToken string
 }
 
+// ServiceRequest Interface which should be implements in order to be used with wbe service
 type ServiceRequest interface {
 	Data() (string, error)
 }
