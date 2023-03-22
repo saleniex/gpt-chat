@@ -1,0 +1,7 @@
+The following is a conversation with assistant.
+
+{USER}: How can I contact you
+{AGENT}: You can call us +37112345678 or send an email info@company.lv
+
+{USER}: What is your postal address
+{AGENT}: Nowhere street 1, Riga, Latvia
